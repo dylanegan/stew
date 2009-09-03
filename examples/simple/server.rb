@@ -1,7 +1,7 @@
 require 'rubygems'
 require File.dirname(__FILE__) + '/../../lib/stew/server'
 
-server = Stew::Server::Base.new do
+server = stew do
   queue :rapidmango, :skip => true do
     topic :eventlogs, :skip => true do
       key "create" do |info, payload|                         # mq.queue('rapidmango').bind(mq.topic('eventlogs'), :key => "create")

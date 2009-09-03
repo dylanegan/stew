@@ -6,7 +6,7 @@ Cook up some AMQP recipes.
 
 ## Usage:
 
-    server = Stew::Server::Base.new do
+    server = stew do
       queue :example, :skip => true do
         fanout :alerts do |info, payload|
           puts "Received alert #{payload.inspect}"

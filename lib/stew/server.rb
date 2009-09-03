@@ -29,8 +29,15 @@ module Stew
         end
       end
     end
+    module Utensils
+      def stew(options = {}, &block)
+        Stew::Server::Base.new(options, &block)
+      end
+    end
   end
 end
+
+include Stew::Server::Utensils
 
 $:.unshift File.dirname(__FILE__) + '/../'
 

@@ -6,7 +6,7 @@ module Stew
         @mappings = {}
         @name = name
         @options = options
-        instance_eval &block if block_given?
+        yield(self) if block_given?
       end
 
       def direct(name, options = {}, &block)

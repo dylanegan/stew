@@ -4,6 +4,8 @@
 
 Cook up some AMQP recipes.
 
+Check [prototype branch](http://github.com/abcde/stew/tree/prototype) for prototyping.
+
 ## Usage:
 
     server = Stew::Server::Base.new do

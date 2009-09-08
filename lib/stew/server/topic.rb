@@ -9,7 +9,7 @@ module Stew
         if @options.delete(:eval) == false
           @block = block
         else
-          instance_eval &block
+          yield(self) if block_given?
         end
       end
      
@@ -26,7 +26,7 @@ module Stew
      
       def match(match, &block)
         @matcher = match
-        instance_eval &block
+        yield(self) if block_given?
         @matcher = nil
       end
      

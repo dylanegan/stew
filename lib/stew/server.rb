@@ -4,9 +4,9 @@ module Stew
   module Server
     class Base
       def initialize(options = {}, &block)
-        @options = {}
+        @options = options 
         @queues = {}
-        instance_eval &block
+        yield(self) if block_given?
       end
      
       def queue(name, options, &block)

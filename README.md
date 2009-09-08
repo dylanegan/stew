@@ -5,20 +5,20 @@
 Cook up some AMQP recipes.
 
 ## Usage:
-    server = stew do
-      queue :example, :skip => true do
-        fanout :alerts do |info, payload|
+    server = stew do |rabbit|
+      rabbit.queue :example, :skip => true do |queue|
+        queue.fanout :alerts do |info, payload|
           puts "Received alert #{payload.inspect}"
         end
 
-        topic :errors, :skip => true do
-          key :fatal do |info, payload|
+        queue.topic :errors, :skip => true do |topic|
+          topic.key :fatal do |info, payload|
             puts "Received fatal error #{payload.inspect}"
           end
         end
       end
 
-      queue :other do |info, payload|
+      rabbit.queue :other do |info, payload|
         puts "I listen to the other queue"
       end
     end

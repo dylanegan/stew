@@ -7,20 +7,23 @@ Cook up some AMQP recipes.
 ## Usage:
 
     server = stew do |rabbit|
-      rabbit.queue :example, :skip => true do |queue|
-        queue.fanout :alerts do |info, payload|
-          puts "Received alert #{payload.inspect}"
+      rabbit.queue :example do |queue|
+        queue.fanout :alerts
+        queue.topic :errors do |topic|
+          topic.key :fatal
         end
 
-        queue.topic :errors, :skip => true do |topic|
-          topic.key :fatal do |info, payload|
-            puts "Received fatal error #{payload.inspect}"
-          end
+        queue.handler do |info, payload|
+          puts "Received #{info.inspect} #{payload.inspect}"
         end
       end
 
-      rabbit.queue :other do |info, payload|
-        puts "I listen to the other queue"
+      rabbit.queue :foo do |queue|
+        queue.direct :other, :bind => true
+
+        queue.handler do |info, payload|
+          puts "I handle the foo queue when someone sends a direct exchange for other"
+        end
       end
     end
 

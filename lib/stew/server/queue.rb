@@ -1,24 +1,34 @@
 module Stew
   module Server
     class Queue
-      attr_reader :mappings
+      attr_accessor :bindings
+      attr_reader :mappings, :name
       def initialize(name, options = {}, &block)
-        @mappings = {}
+        @bindings = []
+        @mappings = []
         @name = name
         @options = options
         yield(self) if block_given?
       end
 
       def direct(name, options = {}, &block)
-        @mappings[name] = Direct.new(name, options, &block)
+        @mappings << Direct.new(name, options, &block)
       end
      
-      def fanout(name, options = {}, &block)
-        @mappings[name] = Fanout.new(name, options, &block)
+      def fanout(name, options = {})
+        @mappings << Fanout.new(name, options)
       end
      
       def topic(name, options = {}, &block)
-        @mappings[name] = Topic.new(name, options, &block)
+        @mappings << Topic.new(name, options, &block)
+      end
+
+      def handler(&block)
+        @handler = block
+      end
+      
+      def handle(info, payload)
+        @handler.call(info, payload)
       end
     end
   end

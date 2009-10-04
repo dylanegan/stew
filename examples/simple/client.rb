@@ -6,13 +6,12 @@ bunny.start
  
 alerts = bunny.exchange('alerts', :type => :fanout)
 other_alerts = bunny.exchange('other_alerts', :type => :fanout)
-eventlogs = bunny.exchange('eventlogs', :type => :topic)
+eventlogs = bunny.exchange('eventlogs')
 
 loop do
-  alerts.publish('test')
-  other_alerts.publish('test')
-  eventlogs.publish(Time.now, :key => 'create')
-  eventlogs.publish('whoo', :key => '1.get')
-  eventlogs.publish({:text => 'test'}.to_yaml, :key => '34.update')
+  alerts.publish('need more food')
+  eventlogs.publish("#{Time.now} received", :key => 'create')
+  eventlogs.publish('not received', :key => '')
+  other_alerts.publish('all full')
   sleep 5
 end

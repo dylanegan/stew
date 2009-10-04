@@ -8,26 +8,6 @@ Check [prototype branch](http://github.com/abcde/stew/tree/prototype) for protot
 
 ## Usage:
 
-    server = Stew::Server::Base.new do
-      queue :example, :skip => true do
-        fanout :alerts do |info, payload|
-          puts "Received alert #{payload.inspect}"
-        end
-
-        topic :errors, :skip => true do
-          key :fatal do |info, payload|
-            puts "Received fatal error #{payload.inspect}"
-          end
-        end
-      end
-
-      queue :other do |info, payload|
-        puts "I listen to the other queue"
-      end
-    end
-
-    server.run
-
 ## License:
 
 (The MIT License)

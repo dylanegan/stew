@@ -1,5 +1,5 @@
 module Stew
-  module Server
+  module Exchange
     class Topic
       attr_reader :mappings
       def initialize(name, options = {}, &block)

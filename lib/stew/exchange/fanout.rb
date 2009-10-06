@@ -1,5 +1,5 @@
 module Stew
-  module Server
+  module Exchange
     class Fanout
       def initialize(name, options)
         @name = name

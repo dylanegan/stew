@@ -16,8 +16,8 @@ module Stew
         end
       end
 
-      def key(name, options = {})
-        @mappings << Key.new(name, [:direct, @name], @matcher)
+      def key(routing_key, options = {})
+        @mappings << Direct.new(@name, options.merge(:key => routing_key, :bind => true))
       end
     end
   end

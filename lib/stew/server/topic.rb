@@ -16,14 +16,8 @@ module Stew
         end
       end
 
-      def match(match)
-        @matcher = match
-        yield(self) if block_given?
-        @matcher = nil
-      end
-
-      def key(name, options = {})
-        @mappings << Key.new(name, [:topic, @name], @matcher)
+      def key(routing_key, options = {})
+        @mappings << Topic.new(@name, options.merge(:key => routing_key, :bind => true))
       end
     end
   end

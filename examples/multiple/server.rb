@@ -13,7 +13,7 @@ server = stew do |rabbit|
     queue.fanout :bar
     queue.direct :other, :bind => true
     queue.handler do |info, payload|
-      puts "bar: #{payload}"
+      puts "bar or other: #{payload}"
     end
   end
 

@@ -3,6 +3,7 @@ require 'mq'
 module Stew
   module Server
     class Base
+      attr_reader :queues
       def initialize(options = {}, &block)
         @options = options 
         @queues = [] 
@@ -45,4 +46,4 @@ include Stew::Server::Utensils
 
 $:.unshift File.dirname(__FILE__) + '/../'
 
-%w( queue topic fanout direct key ).each { |file| require "stew/server/#{file}" }
+%w( queue topic fanout direct ).each { |file| require "stew/server/#{file}" }

@@ -1,5 +1,5 @@
 module Stew
-  module Server
+  module Exchange
     class Direct
       attr_reader :mappings
       def initialize(name, options = {}, &block)

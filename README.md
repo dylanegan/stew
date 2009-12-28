@@ -5,6 +5,7 @@
 Cook up some AMQP recipes.
 
 ## Usage:
+
     server = stew do |rabbit|
       rabbit.queue :example do |queue|
         queue.fanout :alerts

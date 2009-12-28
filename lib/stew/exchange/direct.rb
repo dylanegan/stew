@@ -1,23 +1,21 @@
 module Stew
   module Exchange
     class Direct
-      attr_reader :mappings
+      attr_reader :name, :queue
+
       def initialize(name, options = {}, &block)
-        @mappings = []
         @name = name
         @options = options
-        yield(self) if block_given?
+        @queue = @options.delete(:queue)
       end
 
-      def bind(queue)
-        if @options[:bind] 
-          amq = MQ.new
-          queue.bindings << amq.queue(queue.name).bind(amq.direct(@name), @options)
-        end
+      def bind
+        amq = MQ.new
+        amq.queue(@queue).bind(amq.direct(@name), @options)
       end
 
-      def key(routing_key, options = {})
-        @mappings << Direct.new(@name, options.merge(:key => routing_key, :bind => true))
+      def key
+        @options[:key]
       end
     end
   end

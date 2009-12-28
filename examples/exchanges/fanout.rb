@@ -1,9 +1,13 @@
-require 'rubygems'
-require File.dirname(__FILE__) + '/../../lib/stew/server'
+require File.dirname(__FILE__) + '/../helper'
 
-server = stew do |rabbit|
-  rabbit.exchanges do |exchange|
-    exchange.fanout :alerts, :queue => :example
-    exchange.fanout :bar, :queue => :bar
+eg.setup do
+  @server = stew do |rabbit|
+    rabbit.fanout :exemplor, :queue => :example
   end
+end
+
+eg 'A fanout exchange named examplor tied to queue example' do
+  exchange = @server.exchanges[:fanout][:exemplor]  
+  Check(exchange.name).is(:exemplor)
+  Check(exchange.queue).is(:example)
 end

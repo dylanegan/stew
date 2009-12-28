@@ -1,14 +1,17 @@
 module Stew
   module Exchange
     class Fanout
-      def initialize(name, options)
+      attr_reader :name, :queue
+
+      def initialize(name, options = {}, &block)
         @name = name
         @options = options
+        @queue = @options.delete(:queue)
       end
- 
-      def bind(queue)
+
+      def bind
         amq = MQ.new
-        queue.bindings << amq.queue(queue.name).bind(amq.fanout(@name), @options)
+        amq.queue(@queue).bind(amq.topic(@name), @options)
       end
     end
   end

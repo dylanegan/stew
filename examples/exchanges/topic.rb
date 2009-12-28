@@ -1,13 +1,14 @@
-require 'rubygems'
-require File.dirname(__FILE__) + '/../../lib/stew/server'
+require File.dirname(__FILE__) + '/../helper'
 
-server = stew do |rabbit|
-  rabbit.exchanges do |exchange|
-    exchange.topic :errors do
-      queue :foo do
-        key [:fatal, :info]
-      end
-      key :warning, :queue => :warning
-    end
+eg.setup do
+  @server = stew do |rabbit|
+    rabbit.topic :exemplor, :key => :example, :queue => :example
   end
+end
+
+eg 'A topic exchange for examplor with key example tied to queue example' do
+  exchange = @server.exchanges[:topic][:exemplor]  
+  Check(exchange.name).is(:exemplor)
+  Check(exchange.key).is(:example)
+  Check(exchange.queue).is(:example)
 end

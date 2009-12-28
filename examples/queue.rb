@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../lib/stew/server'
+require File.dirname(__FILE__) + '/helper'
 
 eg.setup do
   @server = stew do |rabbit|
@@ -9,5 +9,6 @@ eg.setup do
 end
 
 eg "An example queue returns the payload" do
-  @server.queues[:example].call([], "payload").is("payload")
+  result = @server.queues[:example].handle([], "payload")
+  Check(result).is("payload")
 end

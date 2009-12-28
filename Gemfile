@@ -1,4 +1,5 @@
-gem "bacon", "1.1.0", :only => :test
+gem "amqp", "0.6.5"
+gem "exemplor", "2010.0.0"
 
 bin_path "tmp/bin"
 bundle_path "tmp/vendor"

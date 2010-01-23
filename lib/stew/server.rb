@@ -12,39 +12,38 @@ module Stew
     end
 
     def direct(name, options = {})
-      @exchanges[:direct][name] = Exchange::Direct.new(name, options)
+      @exchanges[:direct][name] = Exchange::Direct.new(name, options.merge(:server => self))
     end
 
     def fanout(name, options = {})
-      @exchanges[:fanout][name] = Exchange::Fanout.new(name, options)
+      @exchanges[:fanout][name] = Exchange::Fanout.new(name, options.merge(:server => self))
     end
    
     def queue(name, options = {}, &block)
-      @queues[name] = Queue.new(name, options, &block)
+      @queues[name] = Queue.new(name, options.merge(:server => self), &block)
     end
 
     def topic(name, options = {})
-      @exchanges[:topic][name] = Exchange::Topic.new(name, options)
+      @exchanges[:topic][name] = Exchange::Topic.new(name, options.merge(:server => self))
     end
    
     def run
+      puts "Starting up the server..."
       AMQP.start(@options) do
-        @queues.each do |queue|
-          bindings_for_mappings(queue, queue.mappings)
+        @exchanges.each do |type, exchanges|
+          exchanges.each do |name, exchange|
+            exchange.bind
+          end
+        end
+        @queues.each do |name, queue|
+          next if queue.bindings.empty?
+          puts "Subscribing to queue #{queue.name}"
           queue.bindings.last.subscribe do |info, payload|
             queue.handle(info, payload)
           end
         end
       end
     end
-
-    private
-      def bindings_for_mappings(queue, mappings)
-        mappings.each do |mapping|
-          bindings_for_mappings(queue, mapping.mappings) if mapping.respond_to?(:mappings) && mapping.mappings.any?
-          mapping.bind(queue)
-        end
-      end
   end
 
   module Utensils

@@ -1,5 +1,3 @@
-require 'mq'
-
 module Stew
   class Server
     attr_reader :exchanges, :queues
@@ -28,7 +26,7 @@ module Stew
     end
    
     def run
-      puts "Starting up the server..."
+      puts "server -> rising"
       AMQP.start(@options) do
         @exchanges.each do |type, exchanges|
           exchanges.each do |name, exchange|
@@ -36,8 +34,11 @@ module Stew
           end
         end
         @queues.each do |name, queue|
-          next if queue.bindings.empty?
-          puts "Subscribing to queue #{queue.name}"
+          if queue.bindings.empty?
+            puts "q:#{queue.name} -> zero bindings -> not subscribing"
+            next
+          end
+          puts "q:#{queue.name} -> subscribing"
           queue.bindings.last.subscribe do |info, payload|
             queue.handle(info, payload)
           end
@@ -45,17 +46,4 @@ module Stew
       end
     end
   end
-
-  module Utensils
-    def stew(options = {}, &block)
-      Stew::Server.new(options, &block)
-    end
-  end
 end
-
-include Stew::Utensils
-
-$:.unshift File.dirname(__FILE__) + '/../'
-
-require 'stew/queue'
-%w( topic fanout direct ).each { |file| require "stew/exchange/#{file}" }

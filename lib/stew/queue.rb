@@ -5,13 +5,13 @@ module Stew
 
     def initialize(name, options = {}, &block)
       @name = name
-      raise "Please provide a handler" unless block_given?
+      raise Stew::Error.new("need handler, kthxbi!") unless block_given?
       @handler = block
       @bindings = []
     end
 
     def handle(info, payload)
-      puts "Handling payload for queue #{@name}"
+      puts "q:#{@name} -> incoming"
       @handler.call(info, payload)
     end
   end

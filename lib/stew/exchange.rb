@@ -12,7 +12,7 @@ module Stew
 
       def bind
         if queue = @server.queues[@queue]
-          puts "#{@queue} -> bind #{self.type[0..0]}:#{@name}"
+          @server.logger.info "#{@queue} -> bind #{self.type[0..0]}:#{@name}"
           amq = MQ.new
           exchange = MQ.send(type, @name)
           queue.bindings << amq.queue(@queue).bind(exchange, @options)

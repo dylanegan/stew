@@ -1,12 +1,19 @@
 module Stew
   class Server
-    attr_reader :exchanges, :queues
+    attr_reader :exchanges, :logger, :queues
 
     def initialize(options = {}, &block)
       @exchanges = { :direct => {}, :fanout => {}, :topic => {} }
       @options = options 
       @queues = {} 
+      initialize_logger
       yield(self) if block_given?
+    end
+
+    def initialize_logger
+      @logger = Logger.new(@options[:log_device] || STDOUT)
+      @logger.level = @options[:log_level] || Logger::INFO
+      @logger.datetime_format = @options[:log_format] || "%Y-%m-%d %H:%M:%S"
     end
 
     def direct(name, options = {})
@@ -26,7 +33,7 @@ module Stew
     end
    
     def run
-      puts "server -> rising"
+      @logger.info "server -> rising"
       AMQP.start(@options) do
         @exchanges.each do |type, exchanges|
           exchanges.each do |name, exchange|
@@ -35,10 +42,10 @@ module Stew
         end
         @queues.each do |name, queue|
           if queue.bindings.empty?
-            puts "q:#{queue.name} -> zero bindings -> not subscribing"
+            @logger.info "q:#{queue.name} -> zero bindings -> not subscribing"
             next
           end
-          puts "q:#{queue.name} -> subscribing"
+          @logger.info "q:#{queue.name} -> subscribing"
           queue.bindings.last.subscribe do |info, payload|
             queue.handle(info, payload)
           end

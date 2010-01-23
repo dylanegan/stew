@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/helper'
 
 eg.setup do
   @server = stew do |rabbit|
-    rabbit.queue :example do |info, payload|
+    rabbit.queue :example do |info, payload, server|
       payload
     end
   end

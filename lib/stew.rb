@@ -1,3 +1,4 @@
+require 'logger'
 require 'mq'
 
 $:.unshift File.dirname(__FILE__)

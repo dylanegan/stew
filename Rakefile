@@ -18,6 +18,9 @@ require File.dirname(__FILE__) + '/vendor/gems/environment'
 desc 'Run exemplor'
 task :exemplor do
   Dir["examples/**/*_exemplor.rb"].each { |example| puts `ruby -Ilib #{example}`; break unless $?.success? }
+  unless $?.success?
+    puts "An example failed. Please fix and retry."
+  end
 end
 
 desc "Run all examples by default"

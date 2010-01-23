@@ -7,23 +7,10 @@ Cook up some AMQP recipes.
 ## Usage:
 
     server = stew do |rabbit|
-      rabbit.queue :example do |queue|
-        queue.fanout :alerts
-        queue.topic :errors do |topic|
-          topic.key :fatal
-        end
+      rabbit.direct :direct_exchange, :queue => :direct_exchange_queue
 
-        queue.handler do |info, payload|
-          puts "Received #{info.inspect} #{payload.inspect}"
-        end
-      end
-
-      rabbit.queue :foo do |queue|
-        queue.direct :other, :bind => true
-
-        queue.handler do |info, payload|
-          puts "I handle the foo queue when someone sends a direct exchange for other"
-        end
+      rabbit.queue :direct_exchange_queue do |info, payload|
+        ... process payload ...
       end
     end
 
@@ -33,7 +20,7 @@ Cook up some AMQP recipes.
 
 (The MIT License)
 
-Copyright (c) 2009 Dylan Egan
+Copyright (c) 2009-2010 Dylan Egan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the 'Software'), to deal in
